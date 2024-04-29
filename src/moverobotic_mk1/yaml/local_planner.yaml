@@ -1,0 +1,256 @@
+###DWAPlannerROS
+##Published Topics
+# ~<name>/global_plan (nav_msgs/Path) #The portion of the global plan that the local planner is currently attempting to follow. Used primarily for visualization purposes.
+# ~<name>/local_plan (nav_msgs/Path) #The local plan or trajectory that scored the highest on the last cycle. Used primarily for visualization purposes.
+
+##Subscribed Topics
+# odom (nav_msgs/Odometry) #Odometry information that gives the local planner the current speed of the robot. The velocity information in this message is assumed to be in the same coordinate frame as the robot_base_frame of the costmap contained within the TrajectoryPlannerROS object.
+
+##Parameters
+DWAPlannerROS: #The dwa_local_planner package provides a controller that drives a mobile base in the plane. This controller serves to connect the path planner to the robot. Using a map, the planner creates a kinematic trajectory for the robot to get from a start to a goal location. Along the way, the planner creates, at least locally around the robot, a value function, represented as a grid map. This value function encodes the costs of traversing through the grid cells. The controller's job is to use this value function to determine dx,dy,dtheta velocities to send to the robot.
+  ##Robot Configuration Parameters
+  acc_lim_x: 0.60 #2.5, The x acceleration limit of the robot in meters/sec^2.
+  acc_lim_y: 0.0 #2.5, The y acceleration limit of the robot in meters/sec^2.
+  acc_lim_theta: 1.0 #3.2 The rotational acceleration limit of the robot in radians/sec^2.
+  acc_lim_trans: 0.6 #3.2 The rotational acceleration limit of the robot in radians/sec^2.
+  max_vel_trans: 0.55 #0.55, The absolute value of the maximum translational velocity for the robot in m/s.
+  min_vel_trans: 0.05 #0.1, The absolute value of the minimum translational velocity for the robot in m/s.
+  max_vel_x: 0.55 #0.55, The maximum x velocity for the robot in m/s.
+  min_vel_x: 0.0 #0.0 The minimum x velocity for the robot in m/s, negative for backwards motion.
+  max_vel_y: 0.0 #0.1, The maximum y velocity for the robot in m/s.
+  min_vel_y: 0.0 #-0.1, The minimum y velocity for the robot in m/s.
+  max_vel_theta: 0.6 #1.0, The absolute value of the maximum rotational velocity for the robot in rad/s.
+  min_vel_theta: 0.2 #0.4, The absolute value of the minimum rotational velocity for the robot in rad/s.
+
+  ##Goal Tolerance Parameters
+  yaw_goal_tolerance: 0.05 #0.05, The tolerance in radians for the controller in yaw/rotation when achieving its goal 
+  xy_goal_tolerance: 0.05 #0.1, The tolerance in meters for the controller in the x & y distance when achieving a goal 
+  latch_xy_goal_tolerance: true #false, If goal tolerance is latched, if the robot ever reaches the goal xy location it will simply rotate in place, even if it ends up outside the goal tolerance while it is doing so.
+  
+  ##Forward Simulation Parameters
+  sim_time: 1.7 #1.7, The amount of time to forward-simulate trajectories in seconds 
+  sim_granularity: 0.025 #0.025, The step size, in meters, to take between points on a given trajectory
+  vx_samples: 10 #3, The number of samples to use when exploring the x velocity space
+  vy_samples: 0 #10, The number of samples to use when exploring the y velocity space
+  vth_samples: 20 #20, The number of samples to use when exploring the theta velocity space
+
+  ##Trajectory Scoring Parameters
+  path_distance_bias: 32.0 #32.0, The weighting for how much the controller should stay close to the path it was given.
+  goal_distance_bias: 24.0 #24.0, The weighting for how much the controller should attempt to reach its local goal, also controls speed.
+  occdist_scale: 0.01 #0.01, The weighting for how much the controller should attempt to avoid obstacles.
+  forward_point_distance: 0.1 #0.325, The distance from the center point of the robot to place an additional scoring point, in meters.
+  stop_time_buffer: 0.2 #0.2, The amount of time that the robot must stop before a collision in order for a trajectory to be considered valid in seconds.
+  scaling_speed: 0.25 #0.25, The absolute value of the velocity at which to start scaling the robot's footprint, in m/s.
+  max_scaling_factor: 0.2 #0.2, The maximum factor to scale the robot's footprint by.
+  publish_cost_grid: false #false, Whether or not to publish the cost grid that the planner will use when planning. When true, a sensor_msgs/PointCloud2 will be available on the ~<name>/cost_cloud topic. Each point cloud represents the cost grid and has a field for each individual scoring function component as well as the overall cost for each cell, taking the scoring parameters into account.
+
+  ##Oscillation Prevention Parameters
+  oscillation_reset_dist: 0.05 #0.05, How far the robot must travel in meters before oscillation flags are reset.
+
+  #Global Plan Parameters
+  prune_plan: true #Defines whether or not to eat up the plan as the robot moves along the path. If set to true, points will fall off the end of the plan once the robot moves 1 meter past them.
+
+  ##Unknown Parameter
+  trans_stopped_vel: 0.10 #* Below what maximum velocity we consider robot to be stopped in translation
+  rot_stopped_vel: 0.80 #* Below what maximum rotation we consider robot to be stopped in rotation
+  angular_sim_granularity: 0.05 #* The step size, in radians, to take between angular samples on a given trajectory.
+  twirling_scale: 0.0 #* The weight for penalizing any changes in robot heading.
+  oscillation_reset_angle: 0.2 #* The angle the robot must turn before oscillation flag are reset, in radians.
+  use_dwa: true #*
+
+
+
+###TrajectoryPlannerROS
+##Published Topics
+# ~<name>/global_plan (nav_msgs/Path) #The portion of the global plan that the local planner is currently attempting to follow. Used primarily for visualization purposes.
+# ~<name>/local_plan (nav_msgs/Path) #The local plan or trajectory that scored the highest on the last cycle. Used primarily for visualization purposes.
+# ~<name>/cost_cloud (sensor_msgs/PointCloud2) #The cost grid used for planning. Used for visualization purposes. See the publish_cost_grid_pc parameter for enabling/disabling this visualization.
+
+##Subscribed Topics
+# odom (nav_msgs/Odometry) #Odometry information that gives the local planner the current speed of the robot. The velocity information in this message is assumed to be in the same coordinate frame as the robot_base_frame of the costmap contained within the TrajectoryPlannerROS object.
+
+##Parameters
+TrajectoryPlannerROS: #The base_local_planner package provides a controller that drives a mobile base in the plane. This controller serves to connect the path planner to the robot. Using a map, the planner creates a kinematic trajectory for the robot to get from a start to a goal location. Along the way, the planner creates, at least locally around the robot, a value function, represented as a grid map. This value function encodes the costs of traversing through the grid cells. The controller's job is to use this value function to determine dx,dy,dtheta velocities to send to the robot.
+  ##Robot Configuration Parameters.
+  acc_lim_x: 2.5 #2.5, The x acceleration limit of the robot in meters/sec^2.
+  acc_lim_y: 0.0 #2.5, The y acceleration limit of the robot in meters/sec^2.
+  acc_lim_theta: 3.2 #3.2, The rotational acceleration limit of the robot in radians/sec^2.
+  max_vel_x: 0.5 #0.5, The maximum forward velocity allowed for the base in meters/sec.
+  min_vel_x: 0.0 #0.1, The minimum forward velocity allowed for the base in meters/sec. It is useful to specify this to guarantee that velocity commands sent to a mobile base are high enough to allow the base to overcome friction.
+  max_vel_theta: 1.0 #1.0, The maximum rotational velocity allowed for the base in radians/sec.
+  min_vel_theta: -1.0 #-1.0, The minimum rotational velocity allowed for the base in radians/sec.
+  min_in_place_vel_theta: 0.4 #0.4, The minimum rotational velocity allowed for the base while performing in-place rotations in radians/sec.
+  escape_vel: -0.1 #-0.1, DEPRECATED (use escape_vel):Speed used for backing up during escapes in meters/sec. Note that it must be negative in order for the robot to actually reverse. A positive speed will cause the robot to move forward while attempting to escape.
+  holonomic_robot: false #true, Determines whether velocity commands are generated for a holonomic or non-holonomic robot. For holonomic robots, strafing velocity commands may be issued to the base. For non-holonomic robots, no strafing velocity commands will be issued.
+  #The following parameters are only used if holonomic_robot is set to true:
+  y_vels: [-0.3, -0.1, 0.1, 0.3] #[-0.3, -0.1, 0.1, 0.3], The strafing velocities that a holonomic robot will consider in meters/sec.
+
+  ##Goal Tolerance Parameters.
+  yaw_goal_tolerance: 0.05 #0.05, The tolerance in radians for the controller in yaw/rotation when achieving its goal.
+  xy_goal_tolerance: 0.10 #0.1, The tolerance in meters for the controller in the x & y distance when achieving a goal.
+  latch_xy_goal_tolerance: true #false, If goal tolerance is latched, if the robot ever reaches the goal xy location it will simply rotate in place, even if it ends up outside the goal tolerance while it is doing so.
+
+  ##Forward Simulation Parameters.
+  sim_time: 1.0 #1.0, The amount of time to forward-simulate trajectories in seconds.
+  sim_granularity: 0.025 #0.025, The step size, in meters, to take between points on a given trajectory.
+  angular_sim_granularity: 0.05 #<sim_granularity>, The step size, in radians, to take between angular samples on a given trajectory.
+  vx_samples: 3 #3, The number of samples to use when exploring the x velocity space.
+  vtheta_samples: 20 #20, The number of samples to use when exploring the theta velocity space.
+
+  ##Trajectory Scoring Parameters
+  meter_scoring: false #false, Whether the gdist_scale and pdist_scale parameters should assume that goal_distance and path_distance are expressed in units of meters or cells. Cells are assumed by default.
+  pdist_scale: 0.6 #0.6, The weighting for how much the controller should stay close to the path it was given, maximal possible value is 5.0
+  gdist_scale: 0.8 #0.8, The weighting for how much the controller should attempt to reach its local goal, also controls speed, maximal possible value is 5.0
+  occdist_scale: 0.01 #0.01, The weighting for how much the controller should attempt to avoid obstacles
+  heading_lookahead: 0.325 #0.325, How far to look ahead in meters when scoring different in-place-rotation trajectories
+  heading_scoring: false #false, Whether to score based on the robot's heading to the path or its distance from the path.
+  heading_scoring_timestep: 0.8 #0.8, How far to look ahead in time in seconds along the simulated trajectory when using heading scoring.
+  dwa: true #true, Whether to use the Dynamic Window Approach (DWA)_ or whether to use Trajectory Rollout (NOTE: In our experience DWA worked as well as Trajectory Rollout and is computationally less expensive. It is possible that robots with extremely poor acceleration limits could gain from running Trajectory Rollout, but we recommend trying DWA first.)
+  publish_cost_grid_pc: false #false,  Whether or not to publish the cost grid that the planner will use when planning. When true, a sensor_msgs/PointCloud2 will be available on the ~<name>/cost_cloud topic. Each point cloud represents the cost grid and has a field for each individual scoring function component as well as the overall cost for each cell, taking the scoring parameters into account.
+  global_frame_id: odom #"odom", The frame to set for the cost_cloud. Should be set to the same frame as the local costmap's global frame.
+
+  ##Oscillation Prevention Parameters
+  oscillation_reset_dist: 0.05 #0.05, How far the robot must travel in meters before oscillation flags are reset.
+
+  ##Global Plan Parameters
+  prune_plan: true #true, Defines whether or not to eat up the plan as the robot moves along the path. If set to true, points will fall off the end of the plan once the robot moves 1 meter past them.
+
+  ##Unknown Parameter
+  escape_reset_dist: 0.1 #*
+  escape_reset_theta: 1.5707 #*
+  simple_attractor: false #*
+
+
+
+###TebLocalPlannerROS
+##Published Topics
+# ~<name>/global_plan (nav_msgs/Path) #The portion of the global plan that the local planner is currently attempting to follow. Used primarily for visualization purposes.
+# ~<name>/local_plan (nav_msgs/Path) #The local plan or trajectory that scored the highest on the last cycle. Used primarily for visualization purposes.
+# ~<name>/teb_poses (geometry_msgs/PoseArray) #The teb_local_planner provides additional information of the planning scene via markers with different namespaces. Namespaces PointObstacles and PolyObstacles: visualize all point and polygon obstacles that are currently considered during optimization. Namespace TebContainer: Visualize all found and optimized trajectories that rest in alternative topologies (only if parallel planning is enabled). Some more information is published such as the optimization footprint model.
+# ~<name>/teb_feedback (teb_local_planner/FeedbackMsg) #The feedback message contains the planned trajectory including the velocity profile and temporal information as well as the obstacle list. Used primarily for evaluation and debugging. Parameter ~<name>/publish_feedback must be enabled.
+
+##Subscribed Topics
+# odom (nav_msgs/Odometry) #Odometry information that gives the local planner the current speed of the robot. The velocity information in this message is assumed to be in the same coordinate frame as the robot_base_frame of the costmap contained within the TrajectoryPlannerROS object.
+# ~<name>/obstacles (costmap_converter/ObstacleArrayMsg) #Provide custom obstacles as point-, line- or polygon-shaped ones (additionally to or instead of the costmap obstacles).
+# ~<name>/via_points (nav_msgs/Path) #Provide custom via-points (you need to set ~<name>/global_plan_viapoint_sep to zero or negative).
+
+##Parameters
+TebLocalPlannerROS:
+  ##Robot Configuration Parameters
+  acc_lim_x: 0.2 #(0.5)0.5, Maximum translational acceleration of the robot in meters/sec^2 
+  acc_lim_theta: 0.2 #(0.5)0.5, Maximum angular acceleration of the robot in radians/sec^2
+  max_vel_x: 0.5 #(0.4)0.4, Maximum translational velocity of the robot in meters/sec 
+  max_vel_x_backwards: 0.2 #0.2, Maximum absolute translational velocity of the robot while driving backwards in meters/sec. See optimization parameter weight_kinematics_forward_drive
+  max_vel_theta: 0.5 #(0.3)0.3, Maximum angular velocity of the robot in radians/sec
+  #The following parameters are relevant only for carlike robots:
+  min_turning_radius: 0.0 #0.0, Minimum turning radius of a carlike robot (set to zero for a diff-drive robot).
+  wheelbase: 1.0 #1.0, The distance between the rear axle and the front axle. The value might be negative for back-wheeled robots (only required if ~<name>/cmd_angle_instead_rotvelis set to true).
+  cmd_angle_instead_rotvel: false #false, Substitute the rotational velocity in the commanded velocity message by the corresponding steering angle [-pi/2,pi/2]
+  #The following parameters are relevant only for holonomic robots:
+  max_vel_y: 0.0 #0.0, Maximum strafing velocity of the robot (should be zero for non-holonomic robots!)
+  acc_lim_y: 0.01 #(0.5)0.5, Maximum strafing acceleration of the robot
+  #The following parameters are relevant for the footprint model used for optimization:
+  footprint_model:
+    type: polygon #("polygon")"point"Specify the robot footprint model type used for optimization. Different types are "point", "circular", "line", "two_circles" and "polygon." The type of the model significantly influences the required computation time.
+    #radius: 0.2 #0.2, This parameter is only relevant for type "circular". It contains the radius of the circle. The center of the circle is located at the robot's axis of rotation.
+    line_start: [-0.125, 0.0] #[-0.3, 0.0], This parameter is only relevant for type "line". It contains the start coordinates of the line segment.
+    line_end: [0.125, 0.0] #[0.3, 0.0],This parameter is only relevant for type "line". It contains the end coordinates of the line segment.
+    #front_offset: 0.2 #0.2, This parameter is only relevant for type "two_circles". It describes how much the center of the front circle is shifted along the robot's x-axis. The robot's axis of rotation is assumed to be located at [0,0].
+    #front_radius: 0.2 #0.2, This parameter is only relevant for type "two_circles". It contains the radius of front circle.
+    #rear_offset: 0.2 #0.2, This parameter is only relevant for type "two_circles". It describes how much the center of the rear circle is shifted along the robot's negative x-axis. The robot's axis of rotation is assumed to be located at [0,0]. 
+    #rear_radius: 0.2 #0.2, This parameter is only relevant for type "two_circles". It contains the radius of rear circle.
+    vertices: [[-0.40, -0.275], [-0.40, 0.275], [0.40, 0.275], [0.40, -0.275]] #[ [0.25,-0.05], [...], ...], This parameter is only relevant for type "polygon". It contains the list of polygon vertices (2d coordinates each). The polygon is always closed: do not repeat the first vertex at the end.
+  is_footprint_dynamic: false #false, If true, updates the footprint before checking trajectory feasibility
+
+  ##Goal Tolerance Parameters
+  xy_goal_tolerance: 0.2 #0.2, Allowed final euclidean distance to the goal position in meters
+  yaw_goal_tolerance: 0.2 #0.2, Allowed final orientation error in radians
+  free_goal_vel: false #false, Remove the goal velocity constraint such that the robot can arrive at the goal with maximum speed
+
+  ##Trajectory Configuration Parameters
+  dt_ref: 0.3 #0.3, Desired temporal resolution of the trajectory (the trajectory is not fixed to dt_ref since the temporal resolution is part of the optimization, but the trajectory will be resized between iterations if dt_ref +-dt_hysteresis is violated.
+  dt_hysteresis: 0.1 #0.1, Hysteresis for automatic resizing depending on the current temporal resolution, usually approx. 10% of dt_ref is recommended
+  min_samples: 3 #3, Minimum number of samples (should be always greater than 2)
+  global_plan_overwrite_orientation: true #true, Overwrite orientation of local subgoals provided by the global planner (since they often provide only a 2D path)
+  global_plan_viapoint_sep: -0.1 #-0.1, If positive, via-points are extrected from the global plan (path-following mode). The value determines the resolution of the reference path (min. separation between each two consecutive via-points along the global plan, if negative: disabled). Refer to parameter weight_viapoint for adjusting the intensity.
+  max_global_plan_lookahead_dist: 3.0 #3.0, Specify the maximum length (cumulative Euclidean distances) of the subset of the global plan taken into account for optimization. The actual length is than determined by the logical conjunction of the local costmap size and this maximum bound. Set to zero or negative in order to deactivate this limitation.
+  force_reinit_new_goal_dist: 1.0 #1.0, Reinitialize the trajectory if a previous goal is updated with a separation of more than the specified value in meters (skip hot-starting)
+  feasibility_check_no_poses: 1 #4, Specify up to which pose on the predicted plan the feasibility should be checked each sampling interval.
+  publish_feedback: false #false, Publish planner feedback containing the full trajectory and a list of active obstacles (should be enabled only for evaluation or debugging). See list of publishers above.
+  shrink_horizon_backup: true #true, Allows the planner to shrink the horizon temporary (50%) in case of automatically detected issues (e.g. infeasibility). Also see parameter shrink_horizon_min_duration.
+  allow_init_with_backwards_motion: true #false, If true, underlying trajectories might be initialized with backwards motions in case the goal is behind the start within the local costmap (this is only recommended if the robot is equipped with rear sensors).
+  exact_arc_length: false #false, If true, the planner uses the exact arc length in velocity, acceleration and turning rate computations (-> increased cpu time), otherwise the Euclidean approximation is used.
+  shrink_horizon_min_duration: 10.0 #10.0, Specify minimum duration for the reduced horizon in case an infeasible trajectory is detected (refer to parameter shrink_horizon_backup in order to activate the reduced horizon mode).
+
+  ##Obstacle Parameters
+  min_obstacle_dist: 0.05 #0.05, Minimum desired separation from obstacles in meters
+  include_costmap_obstacles: true #true, Specify if obstacles of the local costmap should be taken into account. Each cell that is marked as obstacle is considered as a point-obstacle. Therefore do not choose a very small resolution of the costmap since it increases computation time. In future releases this circumstance is going to be addressed as well as providing an additional api for dynamic obstacles.
+  costmap_obstacles_behind_robot_dist: 1.0 #1.0, Limit the occupied local costmap obstacles taken into account for planning behind the robot (specify distance in meters).
+  obstacle_poses_affected: 30 #30, Each obstacle position is attached to the closest pose on the trajectory in order to keep a distance. Additional neighbors can be taken into account as well. Note, this parameter might be removed in future versions, since the the obstacle association strategy has been modified in kinetic+. Refer to the parameter description of legacy_obstacle_association.
+  inflation_dist: 0.6 #0.6, Buffer zone around obstacles with non-zero penalty costs (should be larger than min_obstacle_dist in order to take effect). Also refer to the weight weight_inflation.
+  include_dynamic_obstacles: false #false, If this parameter is set to true, the motion of obstacles with non-zero velocity (provided via user-supplied obstacles on topic ~/obstacles or obtained from the costmap_converter) is predicted and considered during optimization via a constant velocity model.
+  legacy_obstacle_association: false #false, The strategy of connecting trajectory poses with obstacles for optimization has been modified (see changelog). You can switch to the old/previous strategy by setting this parameter to true. Old strategy: for each obstacle, find the nearest TEB pose; new strategy: for each teb pose, find only "relevant" obstacles.
+  obstacle_association_force_inclusion_factor: 1.5 #1.5, The non-legacy obstacle association strategy tries to connect only relevant obstacles with the discretized trajectory during optimization. But all obstacles within a specifed distance are forced to be included (as a multiple of min_obstacle_dist). E.g. choose 2.0 in order toenforce the consideration obstacles within a radius of 2.0*min_obstacle_dist. [This parameter is used only if parameter legacy_obstacle_association is false].
+  obstacle_association_cutoff_factor: 5 #5, See obstacle_association_force_inclusion_factor, but beyond a multiple of [value]*min_obstacle_dist all obstacles are ignored during optimization. Parameter obstacle_association_force_inclusion_factor is processed first. [This parameter is used only if parameter legacy_obstacle_association is false]
+  #The following parameters are relevant only if costmap_converter plugins are desired:
+  costmap_converter_plugin: "" #Define plugin name in order to convert costmap cells to points/lines/polygons. Set an empty string to disable the conversion such that all cells are treated as point-obstacles.
+  costmap_converter_spin_thread: true #true, If set to true, the costmap converter invokes its callback queue in a different thread
+  costmap_converter_rate: 5.0 #5.0, Rate that defines how often the costmap_converter plugin processes the current costmap (the value should not be much higher than the costmap update rate) [in Hz].
+
+  ##Optimization Parameters
+  no_inner_iterations: 5 #5, Number of actual solver iterations called in each outerloop iteration. See param no_outer_iterations.
+  no_outer_iterations: 4 #4, Each outerloop iteration automatically resizes the trajectory according to the desired temporal resolution dt_ref and invokes the internal optimizer (that performs no_inner_iterations). The total number of solver iterations in each planning cycle is therefore the product of both values.
+  penalty_epsilon: 0.1 #0.1, Add a small safety margin to penalty functions for hard-constraint approximations
+  weight_max_vel_x: 2.0 #2.0, Optimization weight for satisfying the maximum allowed translational velocity
+  weight_max_vel_theta: 1.0 #1.0, Optimization weight for satisfying the maximum allowed angular velocity
+  weight_acc_lim_x: 1.0 #1.0, Optimization weight for satisfying the maximum allowed translational acceleration
+  weight_acc_lim_theta: 1.0 #1.0, Optimization weight for satisfying the maximum allowed angular acceleration
+  weight_kinematics_nh: 1000.0 #1000.0, Optimization weight for satisfying the non-holonomic kinematics (this parameter must be high since the kinematics equation constitutes an equality constraint, even a value of 1000 does not imply a bad matrix condition due to small 'raw' cost values in comparison to other costs).
+  weight_kinematics_forward_drive: 1.0 #1.0, Optimization weight for forcing the robot to choose only forward directions (positive transl. velocities). A small weight (e.g. 1.0) still allows driving backwards. A value around 1000 almost prevents backward driving (but cannot be guaranteed).
+  weight_kinematics_turning_radius: 1.0 #1.0, Optimization weight for enforcing a minimum turning radius (only for carlike robots).
+  weight_optimaltime: 1.0 #1.0, Optimization weight for contracting the trajectory w.r.t transition/execution time
+  weight_obstacle: 50.0 #50.0, Optimization weight for keeping a minimum distance from obstacles
+  weight_viapoint: 1.0 #1.0, Optimization weight for minimzing the distance to via-points (resp. reference path).
+  weight_inflation: 0.1 #0.1, Optimization weight for the inflation penalty (should be small).
+  weight_adapt_factor: 2.0 #2.0, Some special weights (currently weight_obstacle) are repeatedly scaled by this factor in each outer TEB iteration (weight_new = weight_old*factor). Increasing weights iteratively instead of setting a huge value a-priori leads to better numerical conditions of the underlying optimization problem.
+
+  ##Parallel Planning in distinctive Topologies
+  enable_homotopy_class_planning: false #true, Activate parallel planning in distinctive topologies (requires much more CPU resources, since multiple trajectories are optimized at once)
+  enable_multithreading: true #true, Activate multiple threading in order to plan each trajectory in a different thread
+  max_number_classes: 2 #4, Specify the maximum number of distinctive trajectories taken into account (limits computational effort)
+  selection_cost_hysteresis: 1.0 #1.0, Specify how much trajectory cost must a new candidate have w.r.t. a previously selected trajectory in order to be selected (selection if new_cost < old_cost*factor).
+  selection_obst_cost_scale: 100.0 #100.0, Extra scaling of obstacle cost terms just for selecting the 'best' candidate.
+  selection_viapoint_cost_scale: 1.0 #1.0, Extra scaling of via-point cost terms just for selecting the 'best' candidate.
+  selection_alternative_time_cost: false #false, If true, time cost (sum of squared time differences) is replaced by the total transition time (sum of time differences).
+  roadmap_graph_no_samples: 15 #15, Specify the number of samples generated for creating the roadmap graph
+  roadmap_graph_area_width: 6 #6, Random keypoints/waypoints are sampled in a rectangular region between start and goal. Specify the width of that region in meters.
+  h_signature_prescaler: 1.0 #1.0, Scale internal parameter (H-signature) that is used to distinguish between homotopy classes. Warning: reduce this parameter only, if you observe problems with too many obstacles in the local cost map, do not choose it extremly low, otherwise obstacles cannot be distinguished from each other (0.2<value<=1).
+  h_signature_threshold: 0.1 #0.1, Two H-signatures are assumed to be equal, if both the difference of real parts and complex parts are below the specified threshold.
+  obstacle_heading_threshold: 1.0 #1.0, Specify the value of the scalar product between obstacle heading and goal heading in order to take them (obstacles) into account for exploration.
+  visualize_hc_graph: false #false, Visualize the graph that is created for exploring distinctive trajectories (check marker message in rviz)
+  viapoints_all_candidates: true #true, If true, all trajectories of different topologies are attached to the set of via-points, otherwise only the trajectory sharing the same topology as the initial/global plan is connected with them (no effect on test_optim_node).
+  switching_blocking_period: 0.0 #0.0, Specify a time duration in seconds that needs to be expired before a switch to a new equivalence class is allowed.
+
+  ##Miscellaneous Parameters
+  odom_topic: odometry/filtered #"odom", Topic name of the odometry message, provided by the robot driver or simulator.
+  map_frame: /map #"odom", Global planning frame (in case of a static map, this parameter must be usually changed to "/map".
+
+  ##Unknown parameter
+  #Trajectory Configuration Parameters:
+  teb_autosize: true #true, 
+  via_points_ordered: false #false, 
+  oscillation_recovery: true #true, 
+  visualize_with_time_as_z_axis_scale: 0.0 #0.0, 
+  dynamic_obstacle_inflation_dist: 0.6 #0.6, 
+  #Optimization Parameters:
+  optimization_active: true #true, 
+  optimization_verbos: false #false, 
+  weight_max_vel_y: 0.0 #2.0, 
+  weight_acc_lim_y: 0.0 #1.0, 
+  weight_shortest_path: 0.0 #0.0, 
+  weight_dynamic_obstacle: 50.0 #50.0, 
+  weight_dynamic_obstacle_inflation: 0.1 #0.1, 
+  obstacle_cost_exponent: 1.0 #1.0, 
+  #Parallel Planning in distinctive Topologies:
+  selection_prefer_initial_plan: 0.95 #0.95, 
+  roadmap_graph_area_length_scale: 1.0 #1.0, 

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="link_wheel" params="name">
+        <link name="${name}">
+            <inertial>
+              <mass value="1"/>
+              <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+              <inertia ixx="0.000526666666667" ixy="0" ixz="0" iyy="0.000526666666667" iyz="0" izz="0.001"/>
+            </inertial>
+            <collision name="link_right_wheel_collision">
+              <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+              <geometry>
+                <cylinder radius="0.076" length="0.06"/>
+              </geometry>
+            </collision>
+            <visual name="${name}_visual">
+              <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+              <geometry>
+                <mesh filename="package://moverobotic_mk1/robot_description/meshes/wheel_Link.STL" />
+              </geometry>
+            </visual>
+        </link>
+    </xacro:macro>
+    
+    <xacro:macro name="joint_wheel" params="name child origin_xyz">
+      <joint name="${name}" type="fixed">
+        <origin rpy="0 0 0" xyz="${origin_xyz}"/>
+        <child link="${child}"/>
+        <parent link="base_link"/>
+        <axis rpy="0 0 0" xyz="0 1 0"/>
+        <limit effort="10000" velocity="1000"/>
+        <joint_properties damping="1.0" friction="1.0"/>
+      </joint>
+
+      <gazebo reference="${name}">
+        <mu1 value="200.0"/>
+        <mu2 value="100.0"/>
+        <kp value="10000000.0" />
+        <kd value="1.0" />
+        <material>Gazebo/Grey</material>
+      </gazebo>
+
+      <transmission name="motor_wheel_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <actuator name="lr_wheel_motor">
+          <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+        <joint name="${name}">
+          <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        </joint>
+      </transmission>
+    </xacro:macro>
+    
+</robot>

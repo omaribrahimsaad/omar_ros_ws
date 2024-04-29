@@ -1,0 +1,18 @@
+[Desktop Entry]
+GenericName=ROS Launch
+Comment=Provides the required nodes for running ROS
+Icon=/home/move-robot04/catkin_ws/src/moverobotic_kktm/resourse/moverobotic_map_saver.jpg
+Keywords=Science;Education;Robotics;Robot;
+Exec=catkin_ws/src/moverobotic_kktm/sh/moverobotic_map_saver_muje.sh
+Path=
+Terminal=true
+MimeType=application/x-ros-launch;
+Categories=Development;Science;Education;
+X-Ubuntu-Category-Secondary=Robotics;
+StartupNotify=true
+Type=Application
+Version=1.0
+X-DCOP-ServiceType=none
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+Name[en_US]=map_saver.desktop

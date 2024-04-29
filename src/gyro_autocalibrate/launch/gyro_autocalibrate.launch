@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="input_topic" default="/imu/data"/>
+	<arg name="output_topic" default="/imu/data/calibrate"/>
+	<arg name="debug" default="true"/>
+
+	<arg name="high_rms_threshold_gx" default="0.001"/>
+	<arg name="low_rms_threshold_gx" default="0.05"/>
+
+	<arg name="high_rms_threshold_gy" default="0.001"/>
+	<arg name="low_rms_threshold_gy" default="0.05"/>
+
+	<arg name="high_rms_threshold_gz" default="0.001"/>
+	<arg name="low_rms_threshold_gz" default="0.05"/>
+
+	<node pkg="gyro_autocalibrate" type="gyro_autocalibrate_node" name="gyro_autocalibrate_node" output="screen">
+		<param name="input_topic" value="$(arg input_topic)"/>
+		<param name="output_topic" value="$(arg output_topic)"/>
+		<param name="debug" value="$(arg debug)"/>
+
+		<param name="high_rms_threshold_gx" value="$(arg high_rms_threshold_gx)"/>
+		<param name="low_rms_threshold_gx" value="$(arg low_rms_threshold_gx)"/>
+
+		<param name="high_rms_threshold_gy" value="$(arg high_rms_threshold_gy)"/>
+		<param name="low_rms_threshold_gy" value="$(arg low_rms_threshold_gy)"/>
+
+		<param name="high_rms_threshold_gz" value="$(arg high_rms_threshold_gz)"/>
+		<param name="low_rms_threshold_gz" value="$(arg low_rms_threshold_gz)"/>
+	</node>
+
+</launch>

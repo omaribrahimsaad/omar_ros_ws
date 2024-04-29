@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC   -shared -Wl,-soname,libmrc10100.so -o /home/mover-amr/catkin_ws/devel/lib/libmrc10100.so CMakeFiles/mrc10100.dir/src/mrc10100_node.cpp.o 

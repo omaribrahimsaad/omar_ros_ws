@@ -1,0 +1,60 @@
+###DWAPlannerROS
+##Published Topics
+# ~<name>/global_plan (nav_msgs/Path) #The portion of the global plan that the local planner is currently attempting to follow. Used primarily for visualization purposes.
+# ~<name>/local_plan (nav_msgs/Path) #The local plan or trajectory that scored the highest on the last cycle. Used primarily for visualization purposes.
+
+##Subscribed Topics
+# odom (nav_msgs/Odometry) #Odometry information that gives the local planner the current speed of the robot. The velocity information in this message is assumed to be in the same coordinate frame as the robot_base_frame of the costmap contained within the TrajectoryPlannerROS object.
+
+##Parameters
+DWAPlannerROS: #The dwa_local_planner package provides a controller that drives a mobile base in the plane. This controller serves to connect the path planner to the robot. Using a map, the planner creates a kinematic trajectory for the robot to get from a start to a goal location. Along the way, the planner creates, at least locally around the robot, a value function, represented as a grid map. This value function encodes the costs of traversing through the grid cells. The controller's job is to use this value function to determine dx,dy,dtheta velocities to send to the robot.
+  ##Robot Configuration Parameters
+  acc_lim_x: 1.0 #2.5, The x acceleration limit of the robot in meters/sec^2.
+  acc_lim_y: 0.0 #2.5, The y acceleration limit of the robot in meters/sec^2.
+  acc_lim_theta: 3.0 #3.2 The rotational acceleration limit of the robot in radians/sec^2.
+  max_vel_trans: 0.65 #0.55, The absolute value of the maximum translational velocity for the robot in m/s.
+  min_vel_trans: 0.055 #0.1, The absolute value of the minimum translational velocity for the robot in m/s.
+  max_vel_x: 0.35 #0.55, The maximum x velocity for the robot in m/s.
+  min_vel_x: -0.055 #0.0 The minimum x velocity for the robot in m/s, negative for backwards motion.
+  max_vel_y: 0.0 #0.1, The maximum y velocity for the robot in m/s.
+  min_vel_y: 0.0 #-0.1, The minimum y velocity for the robot in m/s.
+  max_vel_theta: 1.0 #1.0, The absolute value of the maximum rotational velocity for the robot in rad/s.
+  min_vel_theta: 0.1 #0.4, The absolute value of the minimum rotational velocity for the robot in rad/s.
+
+  ##Goal Tolerance Parameters
+  yaw_goal_tolerance: 0.15 #0.05, The tolerance in radians for the controller in yaw/rotation when achieving its goal 
+  xy_goal_tolerance: 0.15 #0.1, The tolerance in meters for the controller in the x & y distance when achieving a goal 
+  latch_xy_goal_tolerance: true #false, If goal tolerance is latched, if the robot ever reaches the goal xy location it will simply rotate in place, even if it ends up outside the goal tolerance while it is doing so.
+  
+  ##Forward Simulation Parameters
+  sim_time: 1.7 #1.7, The amount of time to forward-simulate trajectories in seconds 
+  sim_granularity: 0.025 #0.025, The step size, in meters, to take between points on a given trajectory
+  vx_samples: 10 #3, The number of samples to use when exploring the x velocity space
+  vy_samples: 0 #10, The number of samples to use when exploring the y velocity space
+  vth_samples: 20 #20, The number of samples to use when exploring the theta velocity space
+
+  ##Trajectory Scoring Parameters
+  path_distance_bias: 32.0 #32.0, The weighting for how much the controller should stay close to the path it was given.
+  goal_distance_bias: 24.0 #24.0, The weighting for how much the controller should attempt to reach its local goal, also controls speed.
+  occdist_scale: 0.01 #0.01, The weighting for how much the controller should attempt to avoid obstacles.
+  forward_point_distance: 0.1 #0.325, The distance from the center point of the robot to place an additional scoring point, in meters.
+  stop_time_buffer: 0.2 #0.2, The amount of time that the robot must stop before a collision in order for a trajectory to be considered valid in seconds.
+  scaling_speed: 0.25 #0.25, The absolute value of the velocity at which to start scaling the robot's footprint, in m/s.
+  max_scaling_factor: 0.2 #0.2, The maximum factor to scale the robot's footprint by.
+  publish_cost_grid: false #false, Whether or not to publish the cost grid that the planner will use when planning. When true, a sensor_msgs/PointCloud2 will be available on the ~<name>/cost_cloud topic. Each point cloud represents the cost grid and has a field for each individual scoring function component as well as the overall cost for each cell, taking the scoring parameters into account.
+
+  ##Oscillation Prevention Parameters
+  oscillation_reset_dist: 0.05 #0.05, How far the robot must travel in meters before oscillation flags are reset.
+
+  #Global Plan Parameters
+  prune_plan: true #Defines whether or not to eat up the plan as the robot moves along the path. If set to true, points will fall off the end of the plan once the robot moves 1 meter past them.
+
+  ##Unknown Parameter
+  trans_stopped_vel: 0.10 #* Below what maximum velocity we consider robot to be stopped in translation
+  rot_stopped_vel: 0.80 #* Below what maximum rotation we consider robot to be stopped in rotation
+  angular_sim_granularity: 0.05 #* The step size, in radians, to take between angular samples on a given trajectory.
+  twirling_scale: 0.0 #* The weight for penalizing any changes in robot heading.
+  oscillation_reset_angle: 0.2 #* The angle the robot must turn before oscillation flag are reset, in radians.
+  use_dwa: true #*
+
+

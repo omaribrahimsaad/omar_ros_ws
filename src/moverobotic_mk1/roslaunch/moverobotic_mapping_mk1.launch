@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="rviz_config" default="$(find moverobotic_mk1)/rviz/rviz_gmapping.rviz"/>
+	<arg name="rqt_config" default="$(find moverobotic_mk1)/perspective/rqt_gmapping.perspective"/>
+	<arg name="movebase_config" default="$(find moverobotic_mk1)/yaml/movebase.yaml"/>
+	<arg name="global_planner_config" default="$(find moverobotic_mk1)/yaml/global_planner.yaml"/>
+	<arg name="local_planner_config" default="$(find moverobotic_mk1)/yaml/local_planner.yaml"/>
+	<arg name="global_costmap_config" default="$(find moverobotic_mk1)/yaml/global_costmap.yaml"/>
+	<arg name="local_costmap_config" default="$(find moverobotic_mk1)/yaml/local_costmap.yaml"/>
+	<arg name="gmapping_config" default="$(find moverobotic_mk1)/yaml/gmapping.yaml"/>
+
+	<include file="$(find moverobotic_mk1)/roslaunch/moverobotic_hardware.launch">
+		
+		<arg name="rviz_config" value="$(arg rviz_config)"/>
+		<!-- <arg name="rqt_config" value="$(arg rqt_config)"/> -->
+	</include>
+
+	<node name="movebase_node" pkg="move_base" type="move_base" respawn="true" output="screen">
+		## MoveBase
+		<rosparam file="$(arg movebase_config)" command="load" />
+
+		## Planners
+		<rosparam file="$(arg global_planner_config)" command="load" />
+		<rosparam file="$(arg local_planner_config)" command="load" />
+
+		## Costmaps
+		<rosparam file="$(arg global_costmap_config)" command="load" />
+		<rosparam file="$(arg local_costmap_config)" command="load" />
+
+		<remap from="odom" to="odometry/filtered"/>
+		<remap from="/cmd_vel" to="/navigation/cmd_vel"/>
+	</node>
+
+	<node name="gmapping_node" pkg="gmapping" type="slam_gmapping" respawn="true" output="screen">
+		<rosparam file="$(arg gmapping_config)" command="load" />
+		<remap from="scan" to="lidar_merge/scan"/>
+	</node>
+	
+</launch>

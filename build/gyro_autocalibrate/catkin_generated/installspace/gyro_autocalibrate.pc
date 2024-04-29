@@ -1,0 +1,8 @@
+prefix=/home/mover-amr/catkin_ws/install
+
+Name: gyro_autocalibrate
+Description: Description of gyro_autocalibrate
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

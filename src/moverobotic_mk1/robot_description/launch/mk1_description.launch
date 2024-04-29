@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<arg name="joint_state_enable" default="false"/>
+	<arg name="joint_state_gui_enable" default="true"/>
+
+	<param name="robot_description" command="$(find xacro)/xacro '$(find mk1_description)/urdf/mk_one.urdf.xacro'"/>
+
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+	</node>
+
+	<group if="$(arg joint_state_gui_enable)">
+		<node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
+		</node>
+	</group>
+	<group unless="$(arg joint_state_gui_enable)">
+		<node if="$(arg joint_state_enable)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+		</node>
+	</group>
+		
+</launch>

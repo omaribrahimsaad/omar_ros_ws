@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!-- <arg name="path_to_sounds" default="$(find moverobotic_mission)/sounds/"/> -->
+	<!-- <arg name="mission_file" default="$(find moverobotic_mk1)/yaml/demo_txmr.yaml"/> -->
+	<arg name="rviz_config" default="$(find moverobotic_mk1)/rviz/rviz_autonomous.rviz"/>
+	<arg name="rqt_config" default="$(find moverobotic_mk1)/perspective/rqt_autonomous.perspective"/>
+	<arg name="movebase_config" default="$(find moverobotic_mk1)/yaml/movebase.yaml"/>
+	<arg name="global_planner_config" default="$(find moverobotic_mk1)/yaml/global_planner.yaml"/>
+	<arg name="local_planner_config" default="$(find moverobotic_mk1)/yaml/local_plannertest.yaml"/>
+	<arg name="global_costmap_config" default="$(find moverobotic_mk1)/yaml/global_costmap.yaml"/>
+	<arg name="local_costmap_config" default="$(find moverobotic_mk1)/yaml/local_costmap.yaml"/>
+	<arg name="amcl_config" default="$(find moverobotic_mk1)/maps/anas_map.yaml"/>
+	
+
+
+      <!-- map file name  -->
+	<arg name="load_state_filename" default="$(find moverobotic_mk1)/maps/anas_map.yaml"/>
+
+
+	<include file="$(find moverobotic_mk1)/roslaunch/moverobotic_hardware.launch">
+		<arg name="rviz_config" value="$(arg rviz_config)"/>
+		<arg name="rqt_config" value="$(arg rqt_config)"/>
+	</include>
+
+	<!-- <node name="moverobotic_mission_node" pkg="moverobotic_mission" type="map_navigation_aimon_node" respawn="true" output="screen">
+		<param name="path_to_sounds" value="$(arg path_to_sounds)"/>
+		<param name="mission_file" value="$(arg mission_file)"/>
+	</node> -->
+
+	<node name="movebase_node" pkg="move_base" type="move_base" respawn="true" output="screen">
+		## MoveBase
+		<rosparam file="$(arg movebase_config)" command="load" />
+
+		## Planners
+		<rosparam file="$(arg global_planner_config)" command="load" />
+		<rosparam file="$(arg local_planner_config)" command="load" />
+
+		## Costmaps
+		<rosparam file="$(arg global_costmap_config)" command="load" />
+		<rosparam file="$(arg local_costmap_config)" command="load" />
+
+		<remap from="odom" to="odometry/filtered"/>
+		<remap from="/cmd_vel" to="/navigation/cmd_vel"/>
+	</node>
+
+	<node name="amcl_node" pkg="amcl" type="amcl">
+		<rosparam file="$(arg amcl_config)" command="load" />
+		<remap from="scan" to="lidar_merge/scan"/>
+	</node>
+
+	<node name="map_server_node" pkg="map_server" type="map_server" args="$(arg load_state_filename)" />
+	
+</launch>

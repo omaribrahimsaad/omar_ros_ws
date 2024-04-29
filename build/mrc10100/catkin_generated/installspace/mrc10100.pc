@@ -1,0 +1,8 @@
+prefix=/home/mover-amr/catkin_ws/install
+
+Name: mrc10100
+Description: Description of mrc10100
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lmrc10100
+Requires: roscpp rospy serial dynamic_reconfigure

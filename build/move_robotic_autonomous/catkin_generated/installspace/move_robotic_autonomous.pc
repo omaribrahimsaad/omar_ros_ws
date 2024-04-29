@@ -1,0 +1,8 @@
+prefix=/home/mover-amr/catkin_ws/install
+
+Name: move_robotic_autonomous
+Description: Description of move_robotic_autonomous
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,8 @@
+prefix=/home/mover-amr/catkin_ws/install
+
+Name: moverobotic_mk1
+Description: Description of moverobotic_mk1
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,30 @@
+lidar_front:
+  ip_address: 192.168.0.10 #ip address laser sensor (if use ethernet)
+  serial_port: /dev/ttyACM0 #serial port name (if use serial port)
+  serial_baud: 115200 #serial baudrate (if use serial port)
+  frame_id: laser_front #laser frame id name
+  calibrate_time: true #
+  publish_multiecho: false #true use "sensor_msgs::MultiEcho" (if sensor support), false use "sensor_msgs::LaserScan"
+  angle_min: -2.0944 #minimum angle(radian) sensor scan
+  angle_max: 2.0944 #maximum angle(radian) sensor scan
+
+lidar_filter_front:
+  scan_filter_chain:
+    - name: box_filter
+      type: laser_filters/LaserScanBoxFilter
+      params:
+        box_frame: base_footprint
+        min_x: -0.5
+        max_x: 0.5
+        min_y: -0.4
+        max_y: 0.4
+        min_z: -1.0
+        max_z: 1.0
+        invert: false
+    - name: speckle_filter
+      type: laser_filters/LaserScanSpeckleFilter
+      params:
+        filter_type: 0
+        max_range: 20.0
+        max_range_difference: 0.1
+        filter_window: 6

@@ -1,0 +1,3 @@
+#dev: /dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_E56F93A7-joystick
+deadzone: 0.01
+autorepeat_rate: 20

@@ -1,0 +1,137 @@
+serial_port: "/dev/serial/by-id/usb-Moverobotic_MRC_Adapt_2074355C5047-if00"
+slave_id: 1
+odom_frame_id: "odom"
+base_frame_id: "base_footprint"
+imu_frame_id: "imu_link"
+
+cmd_range_max0: 1.0
+cmd_range_min0: -1.0
+cmd_acceleration0: 3.0
+cmd_deceleration0: 3.0
+
+cmd_range_max1: 0.75
+cmd_range_min1: -0.75
+cmd_acceleration1: 3.0
+cmd_deceleration1: 3.0
+
+accel_bias_x: 0.205971
+accel_bias_y: 0.287402
+accel_bias_z: -0.665800
+accel_inv_00: 1.0
+accel_inv_11: 1.0
+accel_inv_22: 1.0
+accel_inv_01: 0.0
+accel_inv_02: 0.0
+accel_inv_12: 0.0
+
+gyro_bias_x: -0.071239
+gyro_bias_y: -0.015978
+gyro_bias_z: 0.021971
+
+rms_threshold_accel: 0.05
+rms_threshold_gyro: 0.005
+
+analog_dir0: false
+analog_limit_max0: 3.2
+analog_limit_min0: 0.1
+analog_range_max0: 3.0
+analog_range_min0: 0.3
+analog_relative_max0: 100.0
+analog_relative_min0: -100.0
+analog_n0: 7.0
+analog_select_max0: 0
+analog_action_max0: 0
+analog_select_min0: 0
+analog_action_min0: 0
+
+analog_dir1: false
+analog_limit_max1: 3.2
+analog_limit_min1: -0.1
+analog_range_max1: 3.0
+analog_range_min1: 0.3
+analog_relative_max1: 100.0
+analog_relative_min1: -100.0
+analog_n1: 7.0
+analog_select_max1: 0
+analog_action_max1: 0
+analog_select_min1: 0
+analog_action_min1: 0
+
+voltage_n: 100.0
+current_n: 100.0
+
+gpi_active0: 0
+gpi_select0: 1
+gpi_action0: 3
+gpi_active1: 0
+gpi_select1: 0
+gpi_action1: 0
+gpi_active2: 0
+gpi_select2: 0
+gpi_action2: 0
+gpi_active3: 1
+gpi_select3: 3
+gpi_action3: 2
+
+gpo_active0: 0
+gpo_select0: 0
+gpo_when0: 0
+gpo_active1: 0
+gpo_select1: 0
+gpo_when1: 0
+gpo_active2: 0
+gpo_select2: 0
+gpo_when2: 0
+
+encoder_dir0: true
+encoder_cpr0: 3600
+encoder_limit_max0: 2000
+encoder_limit_min0: -2000
+encoder_range_max0: 1800
+encoder_range_min0: -1800
+encoder_relative_max0: 180.0
+encoder_relative_min0: -180.0
+encoder_home_count0: 0
+encoder_n0: 50.0
+encoder_select_max0: 0
+encoder_action_max0: 0
+encoder_select_min0: 0
+encoder_action_min0: 0
+
+encoder_dir1: true
+encoder_cpr1: 3600
+encoder_limit_max1: 2000
+encoder_limit_min1: -2000
+encoder_range_max1: 1800
+encoder_range_min1: -1800
+encoder_relative_max1: 180.0
+encoder_relative_min1: -180.0
+encoder_home_count1: 0
+encoder_n1: 50.0
+encoder_select_max1: 0
+encoder_action_max1: 0
+encoder_select_min1: 0
+encoder_action_min1: 0
+
+modbus_id: 1
+watchdog: 1000
+
+motor_dir0: true
+motor_mode0: 6
+pid_p0: 100.0
+pid_i0: 800.0
+pid_d0: 2.0
+pid_j0: 0.0
+pid_n0: 50.0
+
+motor_dir1: false
+motor_mode1: 6
+pid_p1: 100.0
+pid_i1: 800.0
+pid_d1: 2.0
+pid_j1: 0.0
+pid_n1: 50.0
+
+wheel_radius: 0.0762
+wheel_track: 0.484
+wheel_base: 0.001

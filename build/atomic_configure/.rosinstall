@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/mover-amr/catkin_ws/devel/setup.sh

@@ -1,0 +1,8 @@
+prefix=/home/mover-amr/catkin_ws/install
+
+Name: urdf_sim_tutorial
+Description: Description of urdf_sim_tutorial
+Version: 0.5.1
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

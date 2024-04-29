@@ -1,0 +1,11 @@
+destination_frame: base_footprint #laser merge frame id name
+cloud_destination_topic: lidar_merge/cloud #sensor_msgs::Point2 publish topic name
+scan_destination_topic: lidar_merge/scan #sensor_msgs::LaserScan publish topic name
+laserscan_topics: /lidar_front/scan_filtered /lidar_rear/scan_filtered #LIST OF THE LASER SCAN TOPICS TO SUBSCRIBE
+angle_min: -3.14259265359 #minimum angle(radian) sensor scan
+angle_max: 3.14259265359 #maximum angle(radian) sensor scan
+#angle_increment: 0.0058 #angle(radian) increment sensor scan
+#time_increment: 1.73611151695e-05 #time(seconds) increment sensor scan
+#scan_time: 0.0250000003725 #time sensor scan
+range_min: 0.30 #min range(meter) sensor scan
+range_max: 60.0 #max range(meter) sensor scan

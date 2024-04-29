@@ -1,0 +1,324 @@
+<?xml version="1.0" ?>
+<robot name="mk_one" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <xacro:include filename="$(find my_robot)/urdf/materials.xacro"/>
+  <xacro:include filename="$(find my_robot)/urdf/mk_one.gazebo" />
+  <xacro:include filename="$(find my_robot)/urdf/macros.xacro" />
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+  <!-- <xacro:include filename="$(find realsense2_description)/urdf/_d455.urdf.xacro" /> -->
+
+  <xacro:arg name="use_nominal_extrinsics" default="false"/>
+  <xacro:arg name="add_plug" default="false" />
+  <xacro:arg name="use_mesh" default="true" />
+
+  <!-- Math constants -->
+  <xacro:property name="deg_to_rad" value="0.01745329251994329577"/>
+
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.37" rpy="0 0 0"/> <!-- increase the value to lower the costmap -->
+  </joint>
+  
+  <link name="base_link">
+    <!-- pose and inertial -->
+    <pose>0 0 0.1 0 0 0</pose>
+    <inertial>
+      <mass value="8"/>
+      <origin rpy="0 0 0" xyz="0 0 0.1"/>
+      <inertia ixx="0.0395416666667" ixy="0" ixz="0" iyy="0.106208333333" iyz="0" izz="0.106208333333"/>
+    </inertial>
+    <!-- body -->
+    <collision name="collision_chassis">
+      <geometry>
+        <mesh
+          filename="package://amr_v1/meshes/base_link.STL" />
+     </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh
+          filename="package://amr_v1/meshes/base_link.STL" />
+      </geometry>
+      <material name="white"/>
+    </visual>
+  
+  
+    <!-- caster frontright -->
+    <collision name="caster_frontright_collision">
+      <origin rpy="0 0 0" xyz="0.2947 0.175 -0.34219"/>
+      <geometry>
+        <sphere radius="0.038"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
+    <visual name="caster_frontright_visual">
+      <origin rpy="0 0 0" xyz="0.2947 0.175 -0.34219"/>
+      <geometry>
+        <sphere radius="0.038"/>
+      </geometry>
+    </visual>
+  
+  <!-- caster frontleft -->
+    <collision name="caster_frontleft_collision">
+      <origin rpy="0 0 0" xyz="0.2947 -0.175 -0.34219"/>
+      <geometry>
+        <sphere radius="0.038"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
+    <visual name="caster_frontleft_visual">
+      <origin rpy="0 0 0" xyz="0.2947 -0.175 -0.34219"/>
+      <geometry>
+        <sphere radius="0.038"/>
+      </geometry>
+    </visual>
+
+  <!-- caster rearright -->
+    <collision name="caster_rearright_collision">
+      <origin rpy="0 0 0" xyz="-0.2663 0.174500000000001 -0.340686269665969"/>
+      <geometry>
+        <sphere radius="0.038"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
+    <visual name="caster_rearrright_visual">
+      <origin rpy="0 0 0" xyz="-0.2663 0.174500000000001 -0.340686269665969"/>
+      <geometry>
+        <sphere radius="0.038"/>
+      </geometry>
+    </visual>
+  
+
+  <!-- caster rearleft -->
+     <collision name="caster_rearleft_collision">
+      <origin rpy="0 0 0" xyz="-0.2663 -0.174500000000001 -0.340686269665969"/>
+      <geometry>
+        <sphere radius="0.038"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>0</mu>
+            <mu2>0</mu2>
+            <slip1>0</slip1>
+            <slip2>0</slip2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
+    <visual name="caster_rearleft_visual">
+      <origin rpy="0 0 0" xyz="-0.2663 -0.174500000000001 -0.340686269665969"/>
+      <geometry>
+        <sphere radius="0.038"/>
+      </geometry>
+    </visual>  
+ </link>
+  
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+  </joint>
+
+  <link name="imu_link"/>
+
+
+  <!-- front_bottom_lrf -->
+  <link name="laser_front">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://amr_v1/meshes/UTM-30LX.dae"/>
+      </geometry>
+    </visual>
+    <material name="blue"/>
+  </link>
+
+  <joint name="laser_front_joint" type="fixed">
+      <axis xyz="0 1 0"/>
+      <parent link="base_link"/>
+      <child link="laser_front"/>
+      <origin rpy="${180 * deg_to_rad} 0 ${45 * deg_to_rad}" xyz="0.34975 0.22475 -0.1705"/>
+      <!-- <origin rpy="0 0 ${180 * deg_to_rad}" xyz="-0.34715 0.22475 0"/> -->
+  </joint>
+
+
+  <!-- rear_bottom_lrf -->
+  <link name="laser_rear">
+    <visual>
+      <origin rpy="0 0 ${180 * deg_to_rad}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://amr_v1/meshes/UTM-30LX.dae"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <joint name="laser_rear_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <parent link="base_link"/>
+    <child link="laser_rear"/>
+    <origin  rpy="${180 * deg_to_rad} 0 ${225 * deg_to_rad}" xyz="-0.34715 -0.22475 -0.1705"/>
+  </joint>
+
+  <!-- <link name="front_rsholder">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://amr_v1/meshes/frontrs_Link.STL"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <joint name="front_rsholder_joint" type="fixed">
+      <axis xyz="0 1 0"/>
+      <parent link="base_link"/>
+      <child link="front_rsholder"/>
+      <origin rpy="0 0 0" xyz="-0.29016 0 0.01"/>
+  </joint>
+
+  <link name="rear_rsholder">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://amr_v1/meshes/rearrs_Link.STL"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <joint name="rear_rsholder_joint" type="fixed">
+      <axis xyz="0 1 0"/>
+      <parent link="base_link"/>
+      <child link="rear_rsholder"/>
+      <origin rpy="0 0 0" xyz="0.29016 0 0.01"/>
+  </joint> -->
+  
+  <xacro:link_wheel name="right_wheel_link" />
+  <xacro:joint_wheel name="right_wheel_joint" child="right_wheel_link" origin_xyz="0 0.238 -0.308" />
+  
+  <xacro:link_wheel name="left_wheel_link" />
+  <xacro:joint_wheel name="left_wheel_joint" child="left_wheel_link" origin_xyz="0 -0.238 -0.308" />
+
+  <link
+    name="oculus_Link">
+    <inertial>
+      <origin
+        xyz="0.0695035818568918 2.91236799437704E-06 -0.0294728709978228"
+        rpy="0 0 0" />
+      <mass
+        value="1.44237737468808" />
+      <inertia
+        ixx="0.0270754630247996"
+        ixy="-8.00620933478448E-07"
+        ixz="2.5384688257538E-06"
+        iyy="0.0151488261133914"
+        iyz="1.86349031442525E-10"
+        izz="0.0402181353094839" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oculus_urdf/meshes/oculus_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://oculus_urdf/meshes/oculus_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="oculus_joint"
+    type="fixed">
+    <origin
+      xyz="0 0.0012014 0.08"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="oculus_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+
+  <!-- <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
+    <origin xyz="0.321 0 0" rpy="0 ${45 * deg_to_rad} 0"/>
+  </xacro:sensor_d435> -->
+
+  <xacro:sensor_d435 parent="base_link" name="camera2" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="0.360 0 0.043" rpy="0 ${9 * deg_to_rad} 0"/>
+  </xacro:sensor_d435>
+
+  <xacro:sensor_d435 parent="base_link" name="camera1" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="0.295 0.191 0.043" rpy="0 ${9 * deg_to_rad} ${43 * deg_to_rad}"/>
+  </xacro:sensor_d435>
+
+  <xacro:sensor_d435 parent="base_link" name="camera3" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="0.295 -0.191 0.043" rpy="0 ${9 * deg_to_rad} ${-43 * deg_to_rad}"/>
+  </xacro:sensor_d435>
+
+  <xacro:sensor_d435 parent="base_link" name="camera4" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="-0.360 0 0.043" rpy="0 ${9 * deg_to_rad} ${180 * deg_to_rad}"/>
+  </xacro:sensor_d435>
+
+  <xacro:sensor_d435 parent="base_link" name="camera5" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="-0.295 0.191 0.043" rpy="0 ${9 * deg_to_rad} ${133 * deg_to_rad}"/>
+  </xacro:sensor_d435>
+
+  <xacro:sensor_d435 parent="base_link" name="camera6" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="-0.295 -0.191 0.043" rpy="0 ${9 * deg_to_rad} ${-133 * deg_to_rad}"/>
+  </xacro:sensor_d435>
+
+  <!-- <xacro:sensor_d455 parent="base_link" name="camera3" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="-0.240 -0.191 0.043" rpy="0 ${9 * deg_to_rad} ${-133 * deg_to_rad}"/>
+  </xacro:sensor_d455> -->
+  
+
+</robot>
