@@ -10,12 +10,12 @@
 	<arg name="local_planner_config" default="$(find moverobotic_mk1)/yaml/local_plannertest.yaml"/>
 	<arg name="global_costmap_config" default="$(find moverobotic_mk1)/yaml/global_costmap.yaml"/>
 	<arg name="local_costmap_config" default="$(find moverobotic_mk1)/yaml/local_costmap.yaml"/>
-	<arg name="amcl_config" default="$(find moverobotic_mk1)/maps/anas_map.yaml"/>
+	<arg name="amcl_config" default="$(find moverobotic_mk1)/yaml/amcl.yaml"/>
 	
 
 
       <!-- map file name  -->
-	<arg name="load_state_filename" default="$(find moverobotic_mk1)/maps/anas_map.yaml"/>
+	<arg name="load_state_filename" default="$(find moverobotic_mk1)/maps/omar_map_test.yaml"/>
 
 
 	<include file="$(find moverobotic_mk1)/roslaunch/moverobotic_hardware.launch">
